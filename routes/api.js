@@ -2,6 +2,10 @@
 
 const SudokuSolver = require('../controllers/sudoku-solver.js');
 
+//Require fill puzzle function
+// require('../public/index.js');
+
+
 module.exports = function (app) {
   
   let solver = new SudokuSolver();
@@ -50,8 +54,44 @@ module.exports = function (app) {
 
       //#6-8 Handle checking input
       // console.log(solver.checkRowPlacement(puzzle, coordinate[0], coordinate[1], value));
-      // console.log(solver.checkColPlacement(puzzle, coordinate[0], coordinate[1], value));
-      console.log(solver.checkRegionPlacement(puzzle, coordinate[0], coordinate[1], value));
+      // console.log(solver.checkColPlacement(puzzle, row, column, value));
+      // console.log(solver.checkRegionPlacement(puzzle, coordinate[0], coordinate[1], value));
+      // console.log(solver.checkExisting(puzzle, coordinate[0], coordinate[1], value));
+
+      let row = coordinate[0].charCodeAt(0) - 65;
+      let column = parseInt(coordinate[1]) - 1;
+      let val = parseInt(value);
+
+      let checkRow = solver.checkRowPlacement(puzzle, row, column, val);
+      let checkCol = solver.checkColPlacement(puzzle, row, column, val);
+      let checkReg = solver.checkRegionPlacement(puzzle, row, column, val);
+      let checkExisting = solver.checkExistingPlacement(puzzle, row, column, val);
+
+      let returnObj = {valid: false};
+
+      if(checkRow && checkCol && checkReg) {
+        returnObj.valid = true;
+      }
+      // else if(checkExisting) {
+      //   returnObj.valid = true;
+      // }
+      else {
+        returnObj.conflict = [];
+      }
+
+      if(!checkRow && !checkExisting) {
+        returnObj.conflict.push('row');
+      }
+      
+      if(!checkCol && !checkExisting) {
+        returnObj.conflict.push('column');
+      }
+
+      if(!checkReg && !checkExisting) {
+        returnObj.conflict.push('region');
+      }
+
+      return res.json(returnObj);
     });
     
   app.route('/api/solve')
@@ -81,6 +121,10 @@ module.exports = function (app) {
         console.log({error: 'Expected puzzle to be 81 characters long'});
         return res.json({error: 'Expected puzzle to be 81 characters long'});
       }
+
+      let solution1 = solver.solve(puzzle);
+      // let solution2 = solver.solve(solution1);
+
 
       //#5 If puzzle cannot be solved
       console.log({error: 'Puzzle cannot be solved'});
