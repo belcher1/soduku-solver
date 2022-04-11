@@ -72,9 +72,9 @@ module.exports = function (app) {
       if(checkRow && checkCol && checkReg) {
         returnObj.valid = true;
       }
-      // else if(checkExisting) {
-      //   returnObj.valid = true;
-      // }
+      else if(checkExisting) {
+        returnObj.valid = true;
+      }
       else {
         returnObj.conflict = [];
       }
@@ -123,12 +123,33 @@ module.exports = function (app) {
       }
 
       let solution1 = solver.solve(puzzle);
-      // let solution2 = solver.solve(solution1);
+      let solution2 = solver.solve(solution1);
+      let solution3 = solver.solve(solution2);
+      let solution4 = solver.solve(solution3);
+      let solution5 = solver.solve(solution4);
+      let solution6 = solver.solve(solution5);
+      let solution7 = solver.solve(solution6);
 
+      console.log(solution1);
+      console.log(solution2);
+      console.log(solution3);
+      console.log(solution4);
+      console.log(solution5);
+      console.log(solution6);
+      console.log(solution7);
 
-      //#5 If puzzle cannot be solved
-      console.log({error: 'Puzzle cannot be solved'});
-      return res.json({error: 'Puzzle cannot be solved'});
+      //Check if Puzzle is solved
+      let solvedRegex = /[1-9]{81}/;
+
+      if(solvedRegex.test(solution7)) {
+        console.log({solution: solution7});
+        return res.json({solution: solution7});
+      }
+      else {
+        //#5 If puzzle cannot be solved
+        console.log({error: 'Puzzle cannot be solved'});
+        return res.json({error: 'Puzzle cannot be solved'});
+      }
     });
 };
 

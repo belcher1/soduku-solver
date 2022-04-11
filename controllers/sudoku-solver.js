@@ -55,6 +55,7 @@ class SudokuSolver {
         rRegion = 2;
         break;
     }
+    // console.log(rRegion);
 
     switch(true) {
       case (column == 0 || column == 1 || column == 2):
@@ -67,6 +68,7 @@ class SudokuSolver {
         cRegion = 2;
         break;
     }
+    // console.log(cRegion);
 
     //
     let puzzleArray = puzzleString.split('');
@@ -75,7 +77,7 @@ class SudokuSolver {
 
     for(let i = 0; i < 3; i++) {
       for(let j = 0; j < 3; j++) {
-        regionArray.push(puzzleArray[(i + (rRegion * 27)) + (j * 9 + (cRegion * 3))]);
+        regionArray.push(parseInt(puzzleArray[(i + (rRegion * 27)) + (j * 9 + (cRegion * 3))]));
       }
     }
     // console.log(regionArray);
@@ -88,14 +90,19 @@ class SudokuSolver {
     }
   }
 
-  //Fix this! - test
   checkExistingPlacement(puzzleString, row, column, value) {
     let index = row * 9 + column;
 
+    // console.log(index);
+    // console.log(puzzleString[index]);
+    // console.log(value.toString());
+
     if(puzzleString[index] == value.toString()) {
+      // console.log(true);
       return true;
     }
     else {
+      // console.log(false);
       return false;
     }
   }
@@ -114,20 +121,28 @@ class SudokuSolver {
         for(let x = 1; x < 10; x++) {
           if(this.checkExistingPlacement(puzzleString, i, j, x)) {
             solution[i][j] = x;
+            possibleSolutions[i][j].push(x);
           }
+        }
 
+        let arrToPush = [];
+
+        for(let x = 1; x < 10; x++) {
           if(
             this.checkRowPlacement(puzzleString, i, j, x) &&
             this.checkColPlacement(puzzleString, i, j, x) &&
             this.checkRegionPlacement(puzzleString, i, j, x) &&
-            !this.checkExistingPlacement(puzzleString, i, j, x)
+            (possibleSolutions[i][j][0] == undefined)
           ) 
           {
-            possibleSolutions[i][j].push(x);
+            arrToPush.push(x);
           }
         }
+
+        possibleSolutions[i][j] = arrToPush;
+
         if(possibleSolutions[i][j].length == 1) {
-          // solution[i][j] = possibleSolutions[i][j][0];
+          solution[i][j] = possibleSolutions[i][j][0];
         }
       }
     }
