@@ -88,7 +88,7 @@ class SudokuSolver {
     }
   }
 
-  //Fix this!
+  //Fix this! - test
   checkExistingPlacement(puzzleString, row, column, value) {
     let index = row * 9 + column;
 
