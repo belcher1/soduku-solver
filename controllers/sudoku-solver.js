@@ -1,7 +1,22 @@
 class SudokuSolver {
 
   validate(puzzleString) {
-    
+
+    //#10 Check for 81 characters
+    if(puzzleString.length != 81) {
+      // console.log({error: 'Expected puzzle to be 81 characters long'});
+      return {error: 'Expected puzzle to be 81 characters long'};
+    }
+
+    //#9 Check for invalid characters in puzzle
+    let puzzleRegex = /^[\.1-9]+$/;
+
+    if(!puzzleRegex.test(puzzleString)) {
+      // console.log({error: 'Invalid characters in puzzle'});
+      return {error: 'Invalid characters in puzzle'};
+    }
+
+    return true;
   }
 
   checkRowPlacement(puzzleString, row, column, value) {
@@ -107,7 +122,15 @@ class SudokuSolver {
     }
   }
 
-  solve(puzzleString) {
+  solve(puzzleString, attempt) {
+
+    //Check with validate function
+    if(this.validate(puzzleString) !== true) {
+      // console.log(this.validate(puzzleString));
+      return this.validate(puzzleString);
+    }
+
+
     let solution = [];
     let possibleSolutions = [];
 
@@ -151,11 +174,28 @@ class SudokuSolver {
     let solutionArrStr = solutionArrArrStr.map(arr => arr.join(''));
     let solutionStr = solutionArrStr.join(''); 
 
+    //Loop up to 7 times
+    let currentAttempt = attempt;
+    let solvedRegex = /[1-9]{81}/;
+
+    // console.log(currentAttempt);
+
     // console.log(solution);
     // console.log(solutionStr);
     // console.log(possibleSolutions);
 
-    return solutionStr;
+    if(!solvedRegex.test(solutionStr) && currentAttempt < 7) {
+      currentAttempt += 1;
+      solutionStr = this.solve(solutionStr, currentAttempt);
+    }
+
+    if(solvedRegex.test(solutionStr)) {
+      return solutionStr;
+    }
+    else {
+      return {error: 'Puzzle cannot be solved'};
+    }
+    
   }
 }
 

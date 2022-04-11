@@ -2,13 +2,14 @@
 
 const SudokuSolver = require('../controllers/sudoku-solver.js');
 
-//Require fill puzzle function
-// require('../public/index.js');
+// Test global variable to track attemps
+// var attempts = 0;
 
 
 module.exports = function (app) {
   
   let solver = new SudokuSolver();
+  // solver.attempts = 0;
 
   app.route('/api/check')
     .post((req, res) => {
@@ -18,7 +19,7 @@ module.exports = function (app) {
 
       //#11 Check for missing puzzle, coordinate or value
       if(!puzzle || !coordinate || !value) {
-        console.log({error: 'Required field(s) missing'});
+        // console.log({error: 'Required field(s) missing'});
         return res.json({error: 'Required field(s) missing'});
       }
 
@@ -26,13 +27,13 @@ module.exports = function (app) {
       let puzzleRegex = /^[\.1-9]+$/;
 
       if(!puzzleRegex.test(puzzle)) {
-        console.log({error: 'Invalid characters in puzzle'});
+        // console.log({error: 'Invalid characters in puzzle'});
         return res.json({error: 'Invalid characters in puzzle'});
       }
 
       //#10 Check for 81 characters
       if(puzzle.length != 81) {
-        console.log({error: 'Expected puzzle to be 81 characters long'});
+        // console.log({error: 'Expected puzzle to be 81 characters long'});
         return res.json({error: 'Expected puzzle to be 81 characters long'});
       }
 
@@ -40,7 +41,7 @@ module.exports = function (app) {
       let coordinateRegex = /^[A-I][1-9]$/;
 
       if(!coordinateRegex.test(coordinate)) {
-        console.log({error: 'Invalid coordinate'});
+        // console.log({error: 'Invalid coordinate'});
         return res.json({error: 'Invalid coordinate'});
       }
 
@@ -48,7 +49,7 @@ module.exports = function (app) {
       let valueRegex = /^[1-9]$/;
 
       if(!valueRegex.test(value)) {
-        console.log({error: 'Invalid value'});
+        // console.log({error: 'Invalid value'});
         return res.json({error: 'Invalid value'});
       }
 
@@ -99,12 +100,12 @@ module.exports = function (app) {
       let puzzle = req.body.puzzle;
 
       //Testing
-      console.log(puzzle);
+      // console.log(puzzle);
       // solver.validate(puzzle);
 
       //#2 Check for missing puzzle
       if(!puzzle) {
-        console.log({error: 'Required field missing'});
+        // console.log({error: 'Required field missing'});
         return res.json({error: 'Required field missing'});
       }
       
@@ -112,38 +113,24 @@ module.exports = function (app) {
       let puzzleRegex = /^[\.1-9]+$/;
 
       if(!puzzleRegex.test(puzzle)) {
-        console.log({error: 'Invalid characters in puzzle'});
+        // console.log({error: 'Invalid characters in puzzle'});
         return res.json({error: 'Invalid characters in puzzle'});
       }
 
       //#4 Check for 81 characters
       if(puzzle.length != 81) {
-        console.log({error: 'Expected puzzle to be 81 characters long'});
+        // console.log({error: 'Expected puzzle to be 81 characters long'});
         return res.json({error: 'Expected puzzle to be 81 characters long'});
       }
 
-      let solution1 = solver.solve(puzzle);
-      let solution2 = solver.solve(solution1);
-      let solution3 = solver.solve(solution2);
-      let solution4 = solver.solve(solution3);
-      let solution5 = solver.solve(solution4);
-      let solution6 = solver.solve(solution5);
-      let solution7 = solver.solve(solution6);
-
-      console.log(solution1);
-      console.log(solution2);
-      console.log(solution3);
-      console.log(solution4);
-      console.log(solution5);
-      console.log(solution6);
-      console.log(solution7);
+      let solution1 = solver.solve(puzzle, 1);
 
       //Check if Puzzle is solved
       let solvedRegex = /[1-9]{81}/;
 
-      if(solvedRegex.test(solution7)) {
-        console.log({solution: solution7});
-        return res.json({solution: solution7});
+      if(solvedRegex.test(solution1)) {
+        console.log({solution: solution1});
+        return res.json({solution: solution1});
       }
       else {
         //#5 If puzzle cannot be solved
